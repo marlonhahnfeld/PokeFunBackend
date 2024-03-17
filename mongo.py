@@ -16,7 +16,7 @@ client = MongoClient(uri,server_api=ServerApi('1')) # Connect to the MongoDB clu
 db = client['Pokemon']
 collectionPokemon = db['Pokemon']
 collectionUsers = db['Users']
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=['*'])
 
 SECRET_KEY = "oU7ufaHTqk7lE0OM7as5Kl1AY43G7UfO"
 def generate_jwt(username):
