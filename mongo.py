@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from pymongo import MongoClient
+from pymongo import ReturnDocument
 from flask_cors import CORS
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -297,6 +298,88 @@ def getHighscoreForMovesetGame():
 
     except Exception as e:
         return jsonify({'result': 'error', 'details': 'Error fetching highscore', 'error' : str(e)})
+
+
+@app.route('/saveScoreGuessThePokemon', methods=['POST'])
+def saveScoreGuessThePokemon():
+    token = request.cookies.get('token')  # Get the token from the cookies
+    username = extract_username(token)
+
+    if username is None:
+        return jsonify({'result': 'error', 'details': 'No user logged in'})
+
+    try:
+        # Create a filter to find the user
+        user_filter = {'username': username}
+
+        # Fetch the user document
+        user_doc = collectionUsers.find_one(user_filter)
+
+        # If the user document doesn't exist, return an error
+        if user_doc is None:
+            return jsonify({'result': 'error', 'details': 'User does not exist'})
+        
+        # If 'gamedata' doesn't exist, initialize it as an empty array
+        if 'gamedata' not in user_doc:
+            collectionUsers.update_one(user_filter, {"$set": {'gamedata': [{'game': 'guessThePokemon', 'score': 1}]}})
+            return jsonify({'result': 'success', 'score': 1})
+        
+        # Find the index of the 'guessThePokemon' game data
+        game_index = next((index for index, game in enumerate(user_doc['gamedata']) if game['game'] == 'guessThePokemon'), None)
+
+        # If the 'guessThePokemon' game data doesn't exist, add it
+        if game_index is None:
+            collectionUsers.update_one(user_filter, {"$push": {'gamedata': {'game': 'guessThePokemon', 'score': 1}}})
+            return jsonify({'result': 'success', 'score': 1})
+
+        # collectionUsers.update_one(user_filter, {"$set": {f'gamedata.{game_index}.score': score}})
+        # If the new score is higher, update the score
+        # Update and get the updated document
+                # If the 'guessThePokemon' game data exists, increment the score
+        if game_index is not None:
+            updated_document = collectionUsers.find_one_and_update(
+                user_filter, 
+                {'$inc': {f'gamedata.{game_index}.score': 1}}, 
+                return_document=ReturnDocument.AFTER
+            )
+
+            # Return the updated score
+            return jsonify({'result': 'success', 'score': updated_document['gamedata'][game_index]['score']})
+
+    except Exception as e:
+        return jsonify({'result': 'error', 'details': 'Error saving score', 'error' : str(e)})
+    
+@app.route('/getScoreGuessThePokemon', methods=['GET'])
+def getScoreGuessThePokemon():
+    token = request.cookies.get('token')  # Get the token from the cookies
+    username = extract_username(token)
+
+    if username is None:
+        return jsonify({'result': 'error', 'details': 'No user logged in'})
+
+    try:
+        # Create a filter to find the user
+        user_filter = {'username': username}
+
+        # Fetch the user document
+        user_doc = collectionUsers.find_one(user_filter)
+
+        # If the user document doesn't exist, return an error
+        if user_doc is None:
+            return jsonify({'result': 'error', 'details': 'User does not exist'})
+
+        # Find the 'guessThePokemon' game data
+        guessThePokemon_game_data = next((game for game in user_doc['gamedata'] if game['game'] == 'guessThePokemon'), None)
+
+        # If the 'guessThePokemon' game data doesn't exist, return an error
+        if guessThePokemon_game_data  is None:
+            return jsonify({'result': 'error', 'details': 'No guessThePokemon game data'})
+
+        # Return the highscore
+        return jsonify({'result': 'success', 'score': guessThePokemon_game_data ['score']})
+
+    except Exception as e:
+        return jsonify({'result': 'error', 'details': 'Error fetching score', 'error' : str(e)})
 
 
 @app.route('/')
