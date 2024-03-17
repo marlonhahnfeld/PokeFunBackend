@@ -1,2 +1,5 @@
 Flask==2.0.1
 Werkzeug==2.2.2
+PyMongo==4.6.2
+flask_cors==3.0.10
+pyjwt==2.8.0
