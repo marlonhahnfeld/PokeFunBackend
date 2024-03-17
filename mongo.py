@@ -67,7 +67,7 @@ def register_user():
         # Set the JWT token as an HttpOnly cookie
         response.set_cookie('token', token, httponly=True)
 
-        response.headers.add('Access-Control-Allow-Origin', 'https://poke-fun-blush.vercel.app/register')
+        response.headers.add('Access-Control-Allow-Origin', 'https://poke-fun-blush.vercel.app/*')
 
 
         return response
