@@ -1,21 +1,16 @@
 {
-    "version": 2,
-    "builds": [
+  "version":2,
+  "builds": [
       {
-        "src": "./index.py",
-        "use": "@vercel/python",
-        "config": {
-          "runtime": "python3.8"
-        }
+          "src":"./index.py",
+          "use": "@vercel/python",
+          "config":{"runtime":"python3.10"}
       }
-    ],
-    "routes": [
+  ],
+  "routes": [
       {
-        "src": "/(.*)",
-        "dest": "/"
+          "src":"/(.*)",
+          "dest":"/"
       }
-    ],
-    "environment": {
-      "ALLOWED_ORIGIN": "https://poke-fun-blush.vercel.app" 
-    }
-  }
+  ]
+}
