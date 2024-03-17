@@ -8,4 +8,4 @@ def start():
 
 @app.route("/mbsa")
 def mbsa():
-    return render_template('index.html')
+    return render_template('../templates/index.html')
