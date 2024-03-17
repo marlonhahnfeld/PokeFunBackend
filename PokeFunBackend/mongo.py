@@ -291,7 +291,4 @@ def getHighscoreForMovesetGame():
     except Exception as e:
         return jsonify({'result': 'error', 'details': 'Error fetching highscore', 'error' : str(e)})
 
-    
-if __name__ == '__main__':
-    CORS(app, supports_credentials=True)  
-    app.run(debug=True)
+
