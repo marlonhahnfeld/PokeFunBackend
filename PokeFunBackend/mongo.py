@@ -292,3 +292,6 @@ def getHighscoreForMovesetGame():
         return jsonify({'result': 'error', 'details': 'Error fetching highscore', 'error' : str(e)})
 
 
+@app.route('/')
+def empty():
+    return "Hello, PokeFun-Backend!"
