@@ -11,13 +11,13 @@
   ],
   "routes": [
     {
-      "src": "/(.)",
+      "src": "/(.*)",
       "dest": "/"
     }
   ],
   "rewrites": [
     {
-      "source": "/(.)",
+      "source": "/(.*)",
       "destination": "/api/:path*"
     }
   ]
