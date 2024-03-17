@@ -10,12 +10,13 @@ from datetime import datetime, timedelta
 #pip install flask_cors
 
 app = Flask(__name__)
+CORS(app)
 uri = "mongodb+srv://pokefun:rliiTFpEjM0zeTIf@pokefun.hglcxgo.mongodb.net/?retryWrites=true&w=majority&appName=PokeFun"
 client = MongoClient(uri,server_api=ServerApi('1')) # Connect to the MongoDB cluster
 db = client['Pokemon']
 collectionPokemon = db['Pokemon']
 collectionUsers = db['Users']
-CORS(app, resources={r"/registerUser": {"origins": ["https://poke-fun-blush.vercel.app", "https://poke-fun-backend-blush.vercel.app"]}}, supports_credentials=True)
+CORS(app, supports_credentials=True)
 
 
 SECRET_KEY = "oU7ufaHTqk7lE0OM7as5Kl1AY43G7UfO"
