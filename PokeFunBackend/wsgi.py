@@ -1,6 +1,4 @@
-from mongo import app
-from mongo import CORS
+from app import app
 
 if __name__ == '__main__':
-    CORS(app, supports_credentials=True)  
     app.run(debug=True)
