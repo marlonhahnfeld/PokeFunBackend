@@ -380,6 +380,33 @@ def getScoreGuessThePokemon():
         return jsonify({'result': 'error', 'details': 'Error fetching score', 'error' : str(e)})
 
 
+@app.route('/fetchHighScoreForGame', methods=['POST'])
+def fetchHighScoreForGame():
+    print("Test")
+    data = request.get_json()
+    game = data.get('game')
+
+    # Find the top 10 users for the specified game
+    pipeline = [
+        {"$unwind": "$gamedata"},
+        {"$match": {"gamedata.game": game}},
+        {"$sort": {"gamedata.score": -1}},
+        {"$limit": 10}
+    ]
+
+    top_users = collectionUsers.aggregate(pipeline)
+
+    # Extract the username and score for each user
+    result = []
+    for user in top_users:
+        result.append({
+            'username': user['username'],
+            'score': user['gamedata']['score']
+        })
+
+    return {'top_users': result}
+
+
 @app.route('/')
 def empty():
     return "Hello, PokeFun-Backend!"
